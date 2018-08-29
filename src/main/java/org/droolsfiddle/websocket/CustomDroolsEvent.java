@@ -129,4 +129,6 @@ public class CustomDroolsEvent {
     setObject(iRule);
     return this;
   }
+
+
 }
