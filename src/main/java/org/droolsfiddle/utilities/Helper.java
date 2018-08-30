@@ -144,14 +144,14 @@ public class Helper {
     }
     
     public static void printObjects(WSLogger LOGGER, Object...objects) {
-    	printObjects(LOGGER, format, objects);
+    	printObjects(format, LOGGER, objects);
     }
     
     public static void printObjects(Object o, WSLogger LOGGER) {
     	printStrings(LOGGER, o.toString());
     }
     
-    public static void printObjects(WSLogger LOGGER, String format, Object...objects) {
+    public static void printObjects(String format, WSLogger LOGGER, Object...objects) {
     	ArrayList<Object> o = new ArrayList<Object>();
     	for(Object obj : objects)o.add(obj);
     	printObjects(o, LOGGER, format);
