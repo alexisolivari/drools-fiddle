@@ -97,7 +97,6 @@ public class Helper {
     	for(String i : t) {
     		print(String.format(format, i), LOGGER);
     	}
-    	print(" ", LOGGER);
     }
     
     public static void printStrings(String format, WSLogger LOGGER, String... strings) {
