@@ -156,4 +156,8 @@ public class Helper {
     	printObjects(o, LOGGER, format);
     }
     
+    public static void printRule(KnowledgeHelper drools, WSLogger LOGGER) {
+    	printObjects(LOGGER, drools.getRule());
+    }
+    
 }
