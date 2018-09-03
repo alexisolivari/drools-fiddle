@@ -17,7 +17,10 @@ package org.droolsfiddle.beans;
 
 import org.droolsfiddle.rest.DrlFireService;
 import org.droolsfiddle.rest.model.Request;
+
 import org.droolsfiddle.utilities.WSLogger;
+import org.droolsfiddle.utilities.Helper;
+
 import org.droolsfiddle.websocket.WebSocketUtil;
 import org.jboss.resteasy.logging.Logger;
 import org.kie.api.KieBase;
@@ -71,6 +74,8 @@ public class DrlFireServiceImpl implements DrlFireService {
         }
                
         kieSession.setGlobal("LOGGER", new WSLogger(wsSession));
+        //kieSession.setGlobal("Helper", new Helper( (WSLogger) kieSession.getGlobal("LOGGER")));
+        
         ExecutorService service = Executors.newFixedThreadPool(1);
 
         Future<Integer> futureResult = service.submit(new Callable<Integer>() {

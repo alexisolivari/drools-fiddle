@@ -35,10 +35,11 @@ export class DRLService {
 
     /* public target = 'drl'; */
     private DrlCode: string = '//\n' +
-        '// copy paste your drl\n' +
         '// Drools version : 7.10.0.Final\n' +
         '\n' +
+        'package org.droolsfiddle;\n\n'+
         'import org.droolsfiddle.utilities.WSLogger;\n' +
+        'import function org.droolsfiddle.utilities.Helper.*;\n' +
         '\n' +
         'global WSLogger LOGGER;\n' +
         '\n' +
@@ -49,14 +50,15 @@ export class DRLService {
         '\n' +
         'rule "Rule"\n' +
         '    when\n' +
-        '        f : Fact(value == 42)\n' +
+        '        Object() or\n' +
+        '        not Object()\n'+
         '    then\n' +
-        '        modify( f ) {setValue( 41 )}\n' +
-        '        LOGGER.debug("This is a debug log");\n' +
-        '        LOGGER.info("This is an info log");\n' +
-        '        LOGGER.warn("This is a warn log");\n' +
-        '        LOGGER.error("This is an error log");\n' +
-        '    end\n' + '\n' + '\n' + '\n' + '\n' + '\n' + '\n' + '\n' + '\n' + '\n' + '\n' + '\n' + '\n' + '\n' + '\n' + '\n' + '\n';
+        '        LOGGER.info("LOGGER Method : debug, info, warn, error");\n' +
+        '        insert(new Fact(42));\n' +
+        '        showFacts(drools, LOGGER);\n' +
+        '        setEnabled(drools, false);\n' +
+        '        \n' +
+        '    end\n' + '\n';
 
     constructor(private httpClient: HttpClient,
                 private factsService: FactsService,

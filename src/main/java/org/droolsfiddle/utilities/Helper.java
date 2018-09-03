@@ -18,14 +18,18 @@ import org.drools.core.base.EnabledBoolean;
 
 public class Helper {
 	
-	//private static KnowledgeHelper drools;
-	//private static WSLogger LOGGER;
+	private KnowledgeHelper drools;
+	private WSLogger LOGGER;
 	
 	private static String format = " -- %s -- ";
 	
-	public Helper(){
-		//this.drools = drools;
-		//this.LOGGER = LOGGER;
+	public Helper(WSLogger LOGGER){
+		this.drools = null;
+		this.LOGGER = LOGGER;
+	}
+	
+	public void setDrools(KnowledgeHelper drools) {
+		this.drools = drools;
 	}
 	
     /**
@@ -53,6 +57,14 @@ public class Helper {
 		}
 	}
 	
+	public static void showFacts(WSLogger LOGGER, KnowledgeHelper drools) {
+		showFacts(drools, LOGGER);
+	}
+	
+	public void showFacts() {
+		showFacts(drools, LOGGER);
+	}
+	
     /**
      * Set the enabled value of the current matched rule
      * 
@@ -66,8 +78,13 @@ public class Helper {
 		return true;
 	}
 	
+	public boolean setEnabled(boolean enabled) {
+		return setEnabled(drools, enabled);
+	}
+	
     /**
      * Set the salience of the current matched rule
+     * Useless - Such that you cannot set the salience of a rule in Drools.
      * 
      * @param KnowledgeHelper drools - just call 'drools' (DefaultKnowledgeHelper)
      * @param int salience : new value
@@ -78,6 +95,10 @@ public class Helper {
 		int oldSalience = drools.getRule().getSalienceValue();
 		drools.getRule().setSalience((Salience)  new SalienceInteger(salience));
 		return oldSalience;
+	}
+	
+	public int setSalience(int salience) {
+		return setSalience(drools, salience);
 	}
 	
 	//** util print
@@ -91,12 +112,15 @@ public class Helper {
     		print(error, LOGGER);
     	}
     }
-		
-    
+	        
     public static void printStrings(ArrayList<String> t, String format, WSLogger LOGGER) {
     	for(String i : t) {
     		print(String.format(format, i), LOGGER);
     	}
+    }
+    
+    public void printStrings(ArrayList<String> t, String format) {
+    	printStrings(t, format, LOGGER);
     }
     
     public static void printStrings(String format, WSLogger LOGGER, String... strings) {
@@ -105,7 +129,15 @@ public class Helper {
     	printStrings(newT, format, LOGGER);
     }
     
+    public void printStrings(String format, String... strings) {
+    	printStrings(format, LOGGER, strings);
+    }
+    
     public static void printStrings(String s, WSLogger LOGGER) {
+    	printStrings(format, LOGGER, s);
+    }
+    
+    public void printStrings(String s) {
     	printStrings(format, LOGGER, s);
     }
     
@@ -113,7 +145,15 @@ public class Helper {
     	printStrings(format,LOGGER, strings);
     }
     
+    public void printStrings(String...strings) {
+    	printStrings(format,LOGGER, strings);
+    }
+    
     public static void printStrings(WSLogger LOGGER, ArrayList<String> t) {
+    	printStrings(t, format, LOGGER);
+    }    
+
+    public void printStrings(ArrayList<String> t) {
     	printStrings(t, format, LOGGER);
     }    
     
@@ -121,13 +161,19 @@ public class Helper {
     	printStrings(LOGGER , t);
     }
     
+    
     public static void printStrings(WSLogger LOGGER, String format, ArrayList<String> t) {
+    	printStrings(t, format, LOGGER);
+    }
+    
+    public void printStrings(String format, ArrayList<String> t) {
     	printStrings(t, format, LOGGER);
     }
     
     public static void printStrings(ArrayList<String> t, WSLogger LOGGER, String format) {
     	printStrings(t, format, LOGGER);
     }
+
     
     public static void printStrings(WSLogger LOGGER, ArrayList<String> t, String format) {
     	printStrings(t, format, LOGGER);
@@ -146,6 +192,10 @@ public class Helper {
     	printObjects(format, LOGGER, objects);
     }
     
+    public void printObjects(Object...objects) {
+    	printObjects(format, LOGGER, objects);
+    }
+    
     public static void printObjects(Object o, WSLogger LOGGER) {
     	printStrings(LOGGER, o.toString());
     }
@@ -160,4 +210,13 @@ public class Helper {
     	printObjects(LOGGER, drools.getRule());
     }
     
+    public static void printRule(WSLogger LOGGER, KnowledgeHelper drools) {
+    	printRule(drools, LOGGER);
+    }
+    
+    
+    public static void printMethods(WSLogger LOGGER, Object o) {
+    	printObjects(LOGGER, (Object[]) o.getClass().getMethods());
+    }
+        
 }
