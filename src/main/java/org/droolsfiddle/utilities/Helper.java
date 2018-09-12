@@ -28,6 +28,9 @@ public class Helper {
 		this.LOGGER = LOGGER;
 	}
 	
+	public Helper() {
+	}
+	
 	public void setDrools(KnowledgeHelper drools) {
 		this.drools = drools;
 	}
