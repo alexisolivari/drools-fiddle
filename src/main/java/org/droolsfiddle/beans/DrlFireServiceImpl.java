@@ -19,7 +19,6 @@ import org.droolsfiddle.rest.DrlFireService;
 import org.droolsfiddle.rest.model.Request;
 
 import org.droolsfiddle.utilities.WSLogger;
-import org.droolsfiddle.utilities.Helper;
 
 import org.droolsfiddle.websocket.WebSocketUtil;
 import org.jboss.resteasy.logging.Logger;
@@ -37,6 +36,8 @@ import java.util.concurrent.*;
 public class DrlFireServiceImpl implements DrlFireService {
 
     private Logger logger = Logger.getLogger(DrlFireServiceImpl.class);
+    
+    private long STOP_TIME = 500;
 
     @Context
     private HttpServletRequest request;
@@ -45,6 +46,8 @@ public class DrlFireServiceImpl implements DrlFireService {
     private DrlContext drlContext;
 
     public Request postDrlFire(final Request iRequest) {
+    	long runDuration = System.nanoTime();
+    	
         logger.debug("Fire Rules service");
         Session wsSession = (Session) request.getSession().getAttribute(Session.class.getName());
 
@@ -85,12 +88,15 @@ public class DrlFireServiceImpl implements DrlFireService {
         });
 
         try{
-            int numberOfFiredRules = futureResult.get(500, TimeUnit.MILLISECONDS);
+            int numberOfFiredRules = futureResult.get(STOP_TIME, TimeUnit.MILLISECONDS);
             resp.setLog("INFO: fired " + numberOfFiredRules + " rules.");
-            WebSocketUtil.sendToWebSocket(wsSession, "INFO: fired " + numberOfFiredRules + " rules.");
+            runDuration = System.nanoTime() - runDuration;
+            long t = runDuration / 1000000;
+            runDuration = runDuration % 1000000;
+            WebSocketUtil.sendToWebSocket(wsSession, "INFO: fired " + numberOfFiredRules + " rules. in "  + t + " ms. (and " + runDuration + " ns.)");
             resp.setSuccess(true);
         } catch(TimeoutException e){
-            logger.warn("No response after 500 milliseconds",e);
+            logger.warn("No response after " + STOP_TIME + " milliseconds",e);
             resp.setLog("ERROR: rule evaluation timed out.");
             kieSession.halt();
             WebSocketUtil.sendToWebSocket(wsSession, "ERROR: rule evaluation timed out.");
@@ -98,13 +104,13 @@ public class DrlFireServiceImpl implements DrlFireService {
             // TODO: should really dispose the session here, because after timeout the session may be unable to
             // fire any more rules (depending on the reason of the timeout). However, this has impacts on the viz, so
             // need to wait for the end of UI refactoring.
-            // kieSession.dispose();
         } catch (Exception e2) {
             logger.warn("Other error during rule evaluation",e2);
             resp.setLog("ERROR: rule evaluation error " + e2.getMessage());
             WebSocketUtil.sendToWebSocket(wsSession, "ERROR: rule evaluation error " + e2.getMessage());
 
         } finally {
+            kieSession.dispose();
             service.shutdown();
         }
 
